@@ -43,17 +43,10 @@ spec:
 
     spec:
 
-
-      # Dedicated ServiceAccount
-
       serviceAccountName: reporting
 
 
-
-      # Pod Security Context
-
       securityContext:
-
 
         runAsNonRoot: true
 
@@ -64,11 +57,9 @@ spec:
         fsGroup: 1001
 
 
-
         seccompProfile:
 
           type: RuntimeDefault
-
 
 
 
@@ -91,8 +82,6 @@ spec:
           - infinity
 
 
-
-        # Container Security Context
 
         securityContext:
 
@@ -133,55 +122,6 @@ spec:
             cpu: "250m"
 
             memory: "256Mi"
-
-
-
-
-        livenessProbe:
-
-
-          exec:
-
-
-            command:
-
-
-            - sh
-
-            - -c
-
-            - "curl -f http://localhost || exit 1"
-
-
-
-          initialDelaySeconds: 10
-
-          periodSeconds: 20
-
-
-
-
-        readinessProbe:
-
-
-          exec:
-
-
-            command:
-
-
-            - sh
-
-            - -c
-
-            - "curl --version || exit 1"
-
-
-
-          initialDelaySeconds: 5
-
-          periodSeconds: 10
-
 
 
 
