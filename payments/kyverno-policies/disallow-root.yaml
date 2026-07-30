@@ -5,22 +5,49 @@ metadata:
   name: disallow-root-user
 
 spec:
+
   validationFailureAction: Enforce
-  background: true
 
   rules:
-    - name: require-run-as-non-root
 
-      match:
-        any:
-        - resources:
-            kinds:
-            - Pod
+  - name: require-run-as-non-root
 
-      validate:
-        message: "Containers must run as non-root."
+    match:
 
-        pattern:
-          spec:
-            securityContext:
-              runAsNonRoot: true
+      any:
+
+      - resources:
+
+          kinds:
+
+          - Pod
+
+
+    exclude:
+
+      any:
+
+      - resources:
+
+          namespaces:
+
+          - argocd
+
+          - kyverno
+
+          - ingress-nginx
+
+          - kube-system
+
+
+    validate:
+
+      message: "Containers must run as non-root"
+
+      pattern:
+
+        spec:
+
+          securityContext:
+
+            runAsNonRoot: true
