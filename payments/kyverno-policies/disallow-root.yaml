@@ -8,6 +8,8 @@ spec:
 
   validationFailureAction: Enforce
 
+  background: true
+
   rules:
 
   - name: require-run-as-non-root
@@ -33,16 +35,10 @@ spec:
 
           - argocd
 
-          - kyverno
-
-          - ingress-nginx
-
-          - kube-system
-
 
     validate:
 
-      message: "Containers must run as non-root"
+      message: "Containers must run as non-root."
 
       pattern:
 
