@@ -1,0 +1,227 @@
+apiVersion: v1
+kind: ServiceAccount
+
+metadata:
+  name: reporting
+  namespace: payments
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: reporting
+  namespace: payments
+
+  labels:
+    app: reporting
+
+
+spec:
+
+  replicas: 1
+
+
+  selector:
+
+    matchLabels:
+
+      app: reporting
+
+
+
+  template:
+
+    metadata:
+
+      labels:
+
+        app: reporting
+
+
+
+    spec:
+
+
+      # Dedicated ServiceAccount
+
+      serviceAccountName: reporting
+
+
+
+      # Pod Security Context
+
+      securityContext:
+
+
+        runAsNonRoot: true
+
+        runAsUser: 1001
+
+        runAsGroup: 1001
+
+        fsGroup: 1001
+
+
+
+        seccompProfile:
+
+          type: RuntimeDefault
+
+
+
+
+      containers:
+
+
+      - name: client
+
+
+        image: curlimages/curl:8.8.0
+
+        imagePullPolicy: IfNotPresent
+
+
+
+        command:
+
+          - sleep
+
+          - infinity
+
+
+
+        # Container Security Context
+
+        securityContext:
+
+
+          allowPrivilegeEscalation: false
+
+
+          readOnlyRootFilesystem: true
+
+
+
+          capabilities:
+
+
+            drop:
+
+
+            - ALL
+
+
+
+
+        resources:
+
+
+          requests:
+
+
+            cpu: "100m"
+
+            memory: "128Mi"
+
+
+
+          limits:
+
+
+            cpu: "250m"
+
+            memory: "256Mi"
+
+
+
+
+        livenessProbe:
+
+
+          exec:
+
+
+            command:
+
+
+            - sh
+
+            - -c
+
+            - "curl -f http://localhost || exit 1"
+
+
+
+          initialDelaySeconds: 10
+
+          periodSeconds: 20
+
+
+
+
+        readinessProbe:
+
+
+          exec:
+
+
+            command:
+
+
+            - sh
+
+            - -c
+
+            - "curl --version || exit 1"
+
+
+
+          initialDelaySeconds: 5
+
+          periodSeconds: 10
+
+
+
+
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+
+  name: reporting
+
+  namespace: payments
+
+  labels:
+
+    app: reporting
+
+
+
+spec:
+
+
+  type: ClusterIP
+
+
+
+  selector:
+
+
+    app: reporting
+
+
+
+  ports:
+
+
+    - name: http
+
+      protocol: TCP
+
+      port: 80
+
+      targetPort: 80
