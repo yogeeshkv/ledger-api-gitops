@@ -5,45 +5,28 @@ metadata:
   name: disallow-root-user
 
 spec:
-
   validationFailureAction: Enforce
-
   background: true
 
   rules:
-
   - name: require-run-as-non-root
 
     match:
-
       any:
-
       - resources:
-
           kinds:
-
           - Pod
 
-
     exclude:
-
       any:
-
       - resources:
-
           namespaces:
-
           - argocd
 
-
     validate:
-
       message: "Containers must run as non-root."
 
       pattern:
-
         spec:
-
           securityContext:
-
             runAsNonRoot: true
